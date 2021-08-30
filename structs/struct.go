@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"strconv"
 	"time"
+
+	_ "time/tzdata"
 )
 
 var Shanhai, _ = time.LoadLocation("Asia/Shanghai")

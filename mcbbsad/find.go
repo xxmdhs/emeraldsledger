@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	_ "time/tzdata"
-
 	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/structs"
 )
