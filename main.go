@@ -57,11 +57,16 @@ func main() {
 		m[v.Hash()] = v
 	}
 
-	b, err := json.MarshalIndent(m, "", "    ")
+	f, err := os.Create("data.json")
 	if err != nil {
 		panic(err)
 	}
-	err = os.WriteFile("data.json", b, 0777)
+	defer f.Close()
+
+	en := json.NewEncoder(f)
+	en.SetEscapeHTML(false)
+	en.SetIndent("", "    ")
+	err = en.Encode(m)
 	if err != nil {
 		panic(err)
 	}
