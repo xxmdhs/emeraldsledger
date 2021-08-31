@@ -69,7 +69,7 @@ func RetryGet(url string, cookie string, i int) ([]byte, error) {
 		if err == nil {
 			break
 		}
-		time.Sleep(3 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("RetryGet: %w", err)

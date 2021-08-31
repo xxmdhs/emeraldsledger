@@ -82,7 +82,7 @@ func threadFind(tid, page int) []structs.McbbsAd {
 		w.Add(1)
 		go func() {
 			a++
-			ad, err := thread.FindPage(tid, i, retry, 5000)
+			ad, err := thread.FindPage(tid, i, retry, 8000)
 			if err != nil {
 				panic(err)
 			}
@@ -90,13 +90,12 @@ func threadFind(tid, page int) []structs.McbbsAd {
 			adl = append(adl, ad...)
 			l.Unlock()
 			w.Done()
-
-			time.Sleep(3000 * time.Millisecond)
+			time.Sleep(3 * time.Second)
 		}()
 		if a > threadInt {
 			w.Wait()
 			a = 0
-			time.Sleep(5000 * time.Millisecond)
+			time.Sleep(10 * time.Second)
 		}
 	}
 	w.Wait()
@@ -116,7 +115,7 @@ type conifg struct {
 }
 
 func init() {
-	flag.IntVar(&threadInt, "thread", 3, "thread")
+	flag.IntVar(&threadInt, "thread", 2, "thread")
 	flag.IntVar(&retry, "retry", 10, "retry")
 	flag.Parse()
 	cookie = os.Getenv("cookie")
