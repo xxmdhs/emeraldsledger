@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/mcbbsad"
@@ -32,7 +31,6 @@ func main() {
 			lock.Lock()
 			adl = append(adl, l...)
 			lock.Unlock()
-			time.Sleep(10 * time.Second)
 		}
 		w.Done()
 	}()
@@ -84,6 +82,7 @@ func threadFind(tid, page int, LimitGet *http.LimitGet) []structs.McbbsAd {
 	a := 0
 	for i := 0; i < page; i++ {
 		w.Add(1)
+		i := i
 		go func() {
 			a++
 			ad, err := thread.FindPage(tid, i, LimitGet)
@@ -119,7 +118,7 @@ type conifg struct {
 }
 
 func init() {
-	flag.IntVar(&threadInt, "thread", 6, "thread")
+	flag.IntVar(&threadInt, "thread", 8, "thread")
 	flag.IntVar(&retry, "retry", 10, "retry")
 	flag.IntVar(&sleepTime, "sleep", 3000, "sleep")
 	flag.Parse()

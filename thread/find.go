@@ -30,6 +30,9 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 			pl := getpinfen(b)
 			for _, vv := range pl {
 				if vv.Type == "宝石" {
+					if vv.Num > 0 {
+						continue
+					}
 					ads = append(ads, structs.McbbsAd{
 						Uid:      v.Authorid,
 						Username: v.Username,
