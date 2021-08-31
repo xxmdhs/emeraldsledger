@@ -111,7 +111,7 @@ type conifg struct {
 }
 
 func init() {
-	flag.IntVar(&threadInt, "thread", 6, "thread")
+	flag.IntVar(&threadInt, "thread", 3, "thread")
 	flag.IntVar(&retry, "retry", 10, "retry")
 	flag.Parse()
 	cookie = os.Getenv("cookie")
