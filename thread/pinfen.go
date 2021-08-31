@@ -41,4 +41,4 @@ type pinfen struct {
 	Num  int
 }
 
-var pinfenReg = regexp.MustCompile(`<tr>\n<td>(.{1,}?) ([+-]\d{1,}) .{1,}?</td>\n<td><a href="home.php\?mod=space&amp;uid=(\d{1,20}?)">(.{1,30}?)</a></td>\n<td><span title="(.{1,}?)">.*</span></td>\n<td>(.*)</td>\n</tr>`)
+var pinfenReg = regexp.MustCompile(`<tr>\n<td>(.{1,}?) ([+-]\d{1,}) .{1,}?</td>\n<td><a href="home.php\?mod=space&amp;uid=(\d{1,20}?)">(.{1,30}?)</a></td>\n<td>.*(\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}).*</td>\n<td>(.*)</td>\n</tr>`)

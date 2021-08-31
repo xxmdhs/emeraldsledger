@@ -10,7 +10,7 @@ import (
 
 func TestFindPage(t *testing.T) {
 	l := http.NewLimitGet(10, 5000, 10)
-	ads, err := FindPage(623778, 1, l)
+	ads, err := FindPage(623778, 5, l)
 	if err != nil {
 		t.Error(err)
 	}
