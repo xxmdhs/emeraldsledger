@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"os"
 	"strconv"
@@ -136,6 +137,9 @@ func init() {
 	m = make(map[string]structs.McbbsAd)
 	bb, err := os.ReadFile("data.json")
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return
+		}
 		panic(err)
 	}
 	err = json.Unmarshal(bb, &m)
