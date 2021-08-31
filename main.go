@@ -56,7 +56,6 @@ func main() {
 	}
 
 	w.Wait()
-	m := map[string]structs.McbbsAd{}
 	for _, v := range adl {
 		m[v.Hash()] = v
 	}
@@ -111,6 +110,7 @@ var (
 	cookie    string
 	sleepTime int
 	c         conifg
+	m         map[string]structs.McbbsAd
 )
 
 type conifg struct {
@@ -129,6 +129,16 @@ func init() {
 		panic(err)
 	}
 	err = json.Unmarshal(b, &c)
+	if err != nil {
+		panic(err)
+	}
+
+	m = make(map[string]structs.McbbsAd)
+	bb, err := os.ReadFile("data.json")
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(bb, &m)
 	if err != nil {
 		panic(err)
 	}
