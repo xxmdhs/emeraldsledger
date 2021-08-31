@@ -50,6 +50,7 @@ func main() {
 				f.Write(b)
 				f.Write([]byte("\n"))
 				log.Println(string(b))
+				w.Done()
 			}
 		}
 	}()
@@ -62,6 +63,7 @@ func main() {
 				panic(err)
 			}
 			for _, v := range l {
+				w.Add(1)
 				adl <- v
 			}
 		}
@@ -79,7 +81,7 @@ func main() {
 		v := v
 		w.Add(1)
 		go func() {
-			threadFind(i, v, LimitGet, adl)
+			threadFind(i, v, LimitGet, adl, &w)
 			w.Done()
 		}()
 	}
@@ -142,12 +144,12 @@ func save() {
 	}
 }
 
-func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsAd) {
-	w := sync.WaitGroup{}
+func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsAd, w *sync.WaitGroup) {
+	ww := sync.WaitGroup{}
 
 	a := 0
 	for i := 0; i < page; i++ {
-		w.Add(1)
+		ww.Add(1)
 		i := i
 		go func() {
 			a++
@@ -156,16 +158,17 @@ func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsA
 				panic(err)
 			}
 			for _, v := range ad {
+				w.Add(1)
 				ch <- v
 			}
-			w.Done()
+			ww.Done()
 		}()
 		if a > threadInt {
-			w.Wait()
+			ww.Wait()
 			a = 0
 		}
 	}
-	w.Wait()
+	ww.Wait()
 }
 
 var (
