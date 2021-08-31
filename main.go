@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bufio"
+	"context"
 	"encoding/json"
 	"errors"
 	"flag"
+	"io"
 	"os"
+	"os/signal"
 	"strconv"
 	"sync"
 
@@ -16,10 +20,40 @@ import (
 
 func main() {
 	w := sync.WaitGroup{}
-	adl := []structs.McbbsAd{}
-	lock := sync.Mutex{}
+	adl := make(chan structs.McbbsAd, 20)
+	cxt, cancel := context.WithCancel(context.Background())
 
 	LimitGet := http.NewLimitGet(threadInt, sleepTime, retry)
+
+	go func() {
+		f, err := os.Create("data.txt")
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		bw := bufio.NewWriter(f)
+		defer bw.Flush()
+		for {
+			select {
+			case <-cxt.Done():
+				return
+			case ad := <-adl:
+				b, err := json.Marshal(ad)
+				if err != nil {
+					panic(err)
+				}
+				bw.Write(b)
+				bw.Write([]byte("\n"))
+			}
+		}
+	}()
+	cc := make(chan os.Signal, 1)
+	signal.Notify(cc, os.Interrupt)
+	go func() {
+		<-cc
+		cancel()
+		os.Exit(0)
+	}()
 
 	w.Add(1)
 	go func() {
@@ -28,9 +62,9 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			lock.Lock()
-			adl = append(adl, l...)
-			lock.Unlock()
+			for _, v := range l {
+				adl <- v
+			}
 		}
 		w.Done()
 	}()
@@ -47,23 +81,38 @@ func main() {
 		w.Add(1)
 		go func() {
 			ad := threadFind(i, v, LimitGet)
-			lock.Lock()
-			adl = append(adl, ad...)
-			lock.Unlock()
-			w.Done()
+			for _, v := range ad {
+				adl <- v
+			}
 		}()
 	}
 
 	w.Wait()
-	for _, v := range adl {
-		m[v.Hash()] = v
-	}
+	cancel()
 
-	f, err := os.Create("data.json")
+	f, err := os.Open("data.txt")
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
+	bs := bufio.NewReader(f)
+	for {
+		b, err := bs.ReadBytes('\n')
+		if err != nil {
+			if !errors.Is(err, io.EOF) {
+				panic(err)
+			}
+		}
+		if len(b) == 0 {
+			break
+		}
+		var ad structs.McbbsAd
+		err = json.Unmarshal(b, &ad)
+		if err != nil {
+			panic(err)
+		}
+		m[ad.Hash()] = ad
+	}
 
 	en := json.NewEncoder(f)
 	en.SetEscapeHTML(false)
