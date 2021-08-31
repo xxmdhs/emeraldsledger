@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -69,6 +70,7 @@ func RetryGet(url string, cookie string, i int) ([]byte, error) {
 		if err == nil {
 			break
 		}
+		log.Println(err)
 		time.Sleep(5 * time.Second)
 	}
 	if err != nil {
