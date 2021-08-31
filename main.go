@@ -128,8 +128,12 @@ func save() {
 		}
 		m[ad.Hash()] = ad
 	}
-
-	en := json.NewEncoder(f)
+	ff, err := os.Create("data.json")
+	if err != nil {
+		panic(err)
+	}
+	defer ff.Close()
+	en := json.NewEncoder(ff)
 	en.SetEscapeHTML(false)
 	en.SetIndent("", "    ")
 	err = en.Encode(m)
