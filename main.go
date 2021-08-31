@@ -27,7 +27,7 @@ func main() {
 			lock.Lock()
 			adl = append(adl, l...)
 			lock.Unlock()
-			time.Sleep(5000 * time.Millisecond)
+			time.Sleep(10 * time.Second)
 		}
 		w.Done()
 	}()
@@ -82,7 +82,7 @@ func threadFind(tid, page int) []structs.McbbsAd {
 		w.Add(1)
 		go func() {
 			a++
-			ad, err := thread.FindPage(tid, i, retry, 3000)
+			ad, err := thread.FindPage(tid, i, retry, 5000)
 			if err != nil {
 				panic(err)
 			}
@@ -91,7 +91,7 @@ func threadFind(tid, page int) []structs.McbbsAd {
 			l.Unlock()
 			w.Done()
 
-			time.Sleep(5000 * time.Millisecond)
+			time.Sleep(3000 * time.Millisecond)
 		}()
 		if a > threadInt {
 			w.Wait()
