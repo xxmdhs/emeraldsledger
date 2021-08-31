@@ -57,7 +57,7 @@ func main() {
 		m[v.Hash()] = v
 	}
 
-	b, err := json.Marshal(m)
+	b, err := json.MarshalIndent(m, "", "    ")
 	if err != nil {
 		panic(err)
 	}

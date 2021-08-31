@@ -30,6 +30,8 @@ func FindPage(page, retry int, cookie string) ([]structs.McbbsAd, error) {
 		ad.Count, _ = strconv.Atoi(string(v[4]))
 		ad.Type = "mcbbsAd"
 
+		ad.Count = ad.Count * -1
+
 		//2021-8-28 09:47
 		t, err := time.ParseInLocation("2006-1-2 15:04", string(v[5]), structs.Shanhai)
 		if err != nil {
