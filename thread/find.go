@@ -20,31 +20,44 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 	if err != nil {
 		return nil, fmt.Errorf("FindPage: %w", err)
 	}
-	ads := []structs.McbbsAd{}
+	adCh := make(chan structs.McbbsAd, 30)
+	eCh := make(chan error, len(t.Variables.Postlist))
+
 	for _, v := range t.Variables.Postlist {
 		if v.Tid != "" && v.Pid != "" {
-			b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+v.Tid+`&pid=`+v.Pid+`&inajax=1`, "")
-			if err != nil {
-				return nil, fmt.Errorf("FindPage: %w", err)
-			}
-			pl := getpinfen(b)
-			for _, vv := range pl {
-				if vv.Type == "宝石" {
-					if vv.Num > 0 {
-						continue
-					}
-					ads = append(ads, structs.McbbsAd{
-						Uid:      v.Authorid,
-						Username: v.Username,
-						Count:    vv.Num,
-						Time:     vv.Time,
-						Cause:    v.Message,
-						Type:     stid,
-						Link:     "https://www.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=" + stid + "&pid=" + v.Pid,
-					})
+			go func() {
+				b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+v.Tid+`&pid=`+v.Pid+`&inajax=1`, "")
+				if err != nil {
+					eCh <- fmt.Errorf("FindPage: %w", err)
 				}
-			}
+				pl := getpinfen(b)
+				for _, vv := range pl {
+					if vv.Type == "宝石" {
+						if vv.Num > 0 {
+							continue
+						}
+						adCh <- structs.McbbsAd{
+							Uid:      v.Authorid,
+							Username: v.Username,
+							Count:    vv.Num,
+							Time:     vv.Time,
+							Cause:    v.Message,
+							Type:     stid,
+							Link:     "https://www.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=" + stid + "&pid=" + v.Pid,
+						}
+					}
+				}
+			}()
 		}
+	}
+
+	ads := make([]structs.McbbsAd, 0, len(t.Variables.Postlist))
+
+	select {
+	case ad := <-adCh:
+		ads = append(ads, ad)
+	case err := <-eCh:
+		return nil, err
 	}
 	return ads, nil
 }

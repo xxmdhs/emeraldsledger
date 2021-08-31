@@ -145,30 +145,16 @@ func save() {
 }
 
 func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsAd, w *sync.WaitGroup) {
-	ww := sync.WaitGroup{}
-
-	a := 0
 	for i := 0; i < page; i++ {
-		ww.Add(1)
-		i := i
-		go func() {
-			a++
-			ad, err := thread.FindPage(tid, i, LimitGet)
-			if err != nil {
-				panic(err)
-			}
-			for _, v := range ad {
-				w.Add(1)
-				ch <- v
-			}
-			ww.Done()
-		}()
-		if a > threadInt {
-			ww.Wait()
-			a = 0
+		ad, err := thread.FindPage(tid, i, LimitGet)
+		if err != nil {
+			panic(err)
+		}
+		for _, v := range ad {
+			w.Add(1)
+			ch <- v
 		}
 	}
-	ww.Wait()
 }
 
 var (
