@@ -49,13 +49,6 @@ func main() {
 			}
 		}
 	}()
-	cc := make(chan os.Signal, 1)
-	signal.Notify(cc, os.Interrupt)
-	go func() {
-		<-cc
-		cancel()
-		os.Exit(0)
-	}()
 
 	w.Add(1)
 	go func() {
@@ -87,9 +80,21 @@ func main() {
 		}()
 	}
 
+	cc := make(chan os.Signal, 1)
+	signal.Notify(cc, os.Interrupt)
+	go func() {
+		<-cc
+		cancel()
+		save()
+		os.Exit(0)
+	}()
+
 	w.Wait()
 	cancel()
+	save()
+}
 
+func save() {
 	f, err := os.Open("data.txt")
 	if err != nil {
 		panic(err)
