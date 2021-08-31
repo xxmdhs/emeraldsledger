@@ -30,6 +30,7 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 	for _, v := range t.Variables.Postlist {
 		if v.Tid != "" && v.Pid != "" {
 			w.Add(1)
+			v := v
 			go func() {
 				defer w.Done()
 				b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+v.Tid+`&pid=`+v.Pid+`&inajax=1`, "")
