@@ -1,7 +1,6 @@
 package mcbbsad
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -41,5 +40,3 @@ func FindPage(page, retry int, cookie string) ([]structs.McbbsAd, error) {
 	}
 	return ads, nil
 }
-
-var ErrNotFind = errors.New("not find")

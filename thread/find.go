@@ -12,7 +12,7 @@ import (
 
 func FindPage(tid, page, retry, sleepTime int) ([]structs.McbbsAd, error) {
 	stid := strconv.Itoa(tid)
-	b, err := http.RetryGet(`https://www.mcbbs.net/api/mobile/index.php?version=4&module=viewthread&tid=`+stid+`&page=`+strconv.Itoa(page), "", retry)
+	b, err := http.RetryGet(`https://www.mcbbs.net/api/mobile/index.php?version=4&module=viewthread&tid=`+stid+`&page=`+strconv.Itoa(page)+"&extra=&ordertype=1", "", retry)
 	if err != nil {
 		return nil, fmt.Errorf("FindPage: %w", err)
 	}
