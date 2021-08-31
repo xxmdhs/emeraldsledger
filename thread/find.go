@@ -31,8 +31,8 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 			for _, vv := range pl {
 				if vv.Type == "宝石" {
 					ads = append(ads, structs.McbbsAd{
-						Uid:      vv.Uid,
-						Username: vv.Name,
+						Uid:      v.Authorid,
+						Username: v.Username,
 						Count:    vv.Num,
 						Time:     vv.Time,
 						Cause:    v.Message,
