@@ -88,7 +88,9 @@ func main() {
 	signal.Notify(cc, os.Interrupt)
 	go func() {
 		<-cc
+		w.Add(1)
 		cancel()
+		w.Wait()
 		save()
 		os.Exit(0)
 	}()
