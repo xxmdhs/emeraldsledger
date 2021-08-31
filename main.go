@@ -21,7 +21,7 @@ import (
 
 func main() {
 	w := sync.WaitGroup{}
-	adl := make(chan structs.McbbsAd, 20)
+	adl := make(chan structs.McbbsAd, 50)
 	cxt, cancel := context.WithCancel(context.Background())
 
 	LimitGet := http.NewLimitGet(threadInt, sleepTime, retry)
@@ -82,10 +82,8 @@ func main() {
 		v := v
 		w.Add(1)
 		go func() {
-			ad := threadFind(i, v, LimitGet)
-			for _, v := range ad {
-				adl <- v
-			}
+			threadFind(i, v, LimitGet, adl)
+			w.Done()
 		}()
 	}
 
@@ -125,9 +123,7 @@ func main() {
 	}
 }
 
-func threadFind(tid, page int, LimitGet *http.LimitGet) []structs.McbbsAd {
-	adl := []structs.McbbsAd{}
-	l := sync.Mutex{}
+func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsAd) {
 	w := sync.WaitGroup{}
 
 	a := 0
@@ -140,9 +136,9 @@ func threadFind(tid, page int, LimitGet *http.LimitGet) []structs.McbbsAd {
 			if err != nil {
 				panic(err)
 			}
-			l.Lock()
-			adl = append(adl, ad...)
-			l.Unlock()
+			for _, v := range ad {
+				ch <- v
+			}
 			w.Done()
 		}()
 		if a > threadInt {
@@ -151,8 +147,6 @@ func threadFind(tid, page int, LimitGet *http.LimitGet) []structs.McbbsAd {
 		}
 	}
 	w.Wait()
-
-	return adl
 }
 
 var (
