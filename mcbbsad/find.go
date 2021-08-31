@@ -12,8 +12,8 @@ import (
 
 var reg = regexp.MustCompile(`<td><a href="home.php\?mod=space&amp;uid=(\d{1,})" target="_blank">(.{1,}?)</a></td>\n.*<td>.*</td>\n.*<td>(.*?)</td>\n.*<td>(\d*?)</td>\n.*<td>(.{1,})</td>`)
 
-func FindPage(page, retry int, cookie string) ([]structs.McbbsAd, error) {
-	b, err := http.RetryGet(`https://www.mcbbs.net/plugin.php?id=mcbbs_ad:ad_history&all=1&page=`+strconv.Itoa(page), cookie, retry)
+func FindPage(page int, cookie string, LimitGet *http.LimitGet) ([]structs.McbbsAd, error) {
+	b, err := LimitGet.Get(`https://www.mcbbs.net/plugin.php?id=mcbbs_ad:ad_history&all=1&page=`+strconv.Itoa(page), cookie)
 	if err != nil {
 		return nil, fmt.Errorf("findPage: %w", err)
 	}

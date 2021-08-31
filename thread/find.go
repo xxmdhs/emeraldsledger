@@ -4,15 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/structs"
 )
 
-func FindPage(tid, page, retry, sleepTime int) ([]structs.McbbsAd, error) {
+func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error) {
 	stid := strconv.Itoa(tid)
-	b, err := http.RetryGet(`https://www.mcbbs.net/api/mobile/index.php?version=4&module=viewthread&tid=`+stid+`&page=`+strconv.Itoa(page)+"&extra=&ordertype=1", "", retry)
+	b, err := LimitGet.Get(`https://www.mcbbs.net/api/mobile/index.php?version=4&module=viewthread&tid=`+stid+`&page=`+strconv.Itoa(page)+"&extra=&ordertype=1", "")
 	if err != nil {
 		return nil, fmt.Errorf("FindPage: %w", err)
 	}
@@ -24,7 +23,7 @@ func FindPage(tid, page, retry, sleepTime int) ([]structs.McbbsAd, error) {
 	ads := []structs.McbbsAd{}
 	for _, v := range t.Variables.Postlist {
 		if v.Tid != "" && v.Pid != "" {
-			b, err := http.RetryGet(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+v.Tid+`&pid=`+v.Pid+`&inajax=1`, "", retry)
+			b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+v.Tid+`&pid=`+v.Pid+`&inajax=1`, "")
 			if err != nil {
 				return nil, fmt.Errorf("FindPage: %w", err)
 			}
@@ -42,7 +41,6 @@ func FindPage(tid, page, retry, sleepTime int) ([]structs.McbbsAd, error) {
 					})
 				}
 			}
-			time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 		}
 	}
 	return ads, nil

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/mcbbsad"
 	"github.com/xxmdhs/emeraldsledger/structs"
 	"github.com/xxmdhs/emeraldsledger/thread"
@@ -17,10 +18,13 @@ func main() {
 	w := sync.WaitGroup{}
 	adl := []structs.McbbsAd{}
 	lock := sync.Mutex{}
+
+	LimitGet := http.NewLimitGet(threadInt, sleepTime, retry)
+
 	w.Add(1)
 	go func() {
 		for i := 0; i < c.Page["adPage"]; i++ {
-			l, err := mcbbsad.FindPage(i, retry, cookie)
+			l, err := mcbbsad.FindPage(i, cookie, LimitGet)
 			if err != nil {
 				panic(err)
 			}
@@ -43,7 +47,7 @@ func main() {
 		v := v
 		w.Add(1)
 		go func() {
-			ad := threadFind(i, v)
+			ad := threadFind(i, v, LimitGet)
 			lock.Lock()
 			adl = append(adl, ad...)
 			lock.Unlock()
@@ -72,7 +76,7 @@ func main() {
 	}
 }
 
-func threadFind(tid, page int) []structs.McbbsAd {
+func threadFind(tid, page int, LimitGet *http.LimitGet) []structs.McbbsAd {
 	adl := []structs.McbbsAd{}
 	l := sync.Mutex{}
 	w := sync.WaitGroup{}
@@ -82,7 +86,7 @@ func threadFind(tid, page int) []structs.McbbsAd {
 		w.Add(1)
 		go func() {
 			a++
-			ad, err := thread.FindPage(tid, i, retry, 8000)
+			ad, err := thread.FindPage(tid, i, LimitGet)
 			if err != nil {
 				panic(err)
 			}
@@ -90,12 +94,10 @@ func threadFind(tid, page int) []structs.McbbsAd {
 			adl = append(adl, ad...)
 			l.Unlock()
 			w.Done()
-			time.Sleep(3 * time.Second)
 		}()
 		if a > threadInt {
 			w.Wait()
 			a = 0
-			time.Sleep(10 * time.Second)
 		}
 	}
 	w.Wait()
@@ -107,6 +109,7 @@ var (
 	threadInt int
 	retry     int
 	cookie    string
+	sleepTime int
 	c         conifg
 )
 
@@ -115,8 +118,9 @@ type conifg struct {
 }
 
 func init() {
-	flag.IntVar(&threadInt, "thread", 2, "thread")
+	flag.IntVar(&threadInt, "thread", 8, "thread")
 	flag.IntVar(&retry, "retry", 10, "retry")
+	flag.IntVar(&sleepTime, "sleep", 500, "sleep")
 	flag.Parse()
 	cookie = os.Getenv("cookie")
 

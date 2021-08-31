@@ -76,3 +76,30 @@ func RetryGet(url string, cookie string, i int) ([]byte, error) {
 	}
 	return b, nil
 }
+
+type LimitGet struct {
+	ch        chan struct{}
+	sleepTime int
+	retry     int
+}
+
+func NewLimitGet(limit, sleepTime, retry int) *LimitGet {
+	return &LimitGet{
+		ch:        make(chan struct{}, limit),
+		sleepTime: sleepTime,
+		retry:     retry,
+	}
+}
+
+func (l *LimitGet) Get(url string, cookie string) ([]byte, error) {
+	l.ch <- struct{}{}
+	defer func() {
+		<-l.ch
+	}()
+	b, err := RetryGet(url, cookie, l.retry)
+	if err != nil {
+		return nil, fmt.Errorf("LimitGet: %w", err)
+	}
+	time.Sleep(time.Duration(l.sleepTime) * time.Millisecond)
+	return b, nil
+}
