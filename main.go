@@ -15,9 +15,9 @@ import (
 
 func main() {
 	w := sync.WaitGroup{}
-	w.Add(1)
 	adl := []structs.McbbsAd{}
 	lock := sync.Mutex{}
+	w.Add(1)
 	go func() {
 		for i := 0; i < c.Page["adPage"]; i++ {
 			l, err := mcbbsad.FindPage(i, retry, cookie)
@@ -27,7 +27,7 @@ func main() {
 			lock.Lock()
 			adl = append(adl, l...)
 			lock.Unlock()
-			time.Sleep(time.Duration(sleepTime) * time.Millisecond)
+			time.Sleep(5000 * time.Millisecond)
 		}
 		w.Done()
 	}()
@@ -77,20 +77,21 @@ func threadFind(tid, page int) []structs.McbbsAd {
 		w.Add(1)
 		go func() {
 			a++
-			ad, err := thread.FindPage(tid, i, retry, sleepTime)
+			ad, err := thread.FindPage(tid, i, retry, 3000)
 			if err != nil {
 				panic(err)
 			}
 			l.Lock()
 			adl = append(adl, ad...)
 			l.Unlock()
-			w.Wait()
+			w.Done()
 
-			time.Sleep(time.Duration(sleepTime) * time.Millisecond)
+			time.Sleep(5000 * time.Millisecond)
 		}()
 		if a > threadInt {
 			w.Wait()
-			time.Sleep(time.Duration(sleepTime) * time.Millisecond)
+			a = 0
+			time.Sleep(5000 * time.Millisecond)
 		}
 	}
 	w.Wait()
@@ -99,7 +100,6 @@ func threadFind(tid, page int) []structs.McbbsAd {
 }
 
 var (
-	sleepTime int
 	threadInt int
 	retry     int
 	cookie    string
@@ -111,7 +111,6 @@ type conifg struct {
 }
 
 func init() {
-	flag.IntVar(&sleepTime, "sleep", 0, "sleep time")
 	flag.IntVar(&threadInt, "thread", 6, "thread")
 	flag.IntVar(&retry, "retry", 10, "retry")
 	flag.Parse()

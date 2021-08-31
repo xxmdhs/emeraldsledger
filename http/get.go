@@ -2,7 +2,6 @@ package http
 
 import (
 	"compress/gzip"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -63,14 +62,16 @@ func (n Not200) Error() string {
 }
 
 func RetryGet(url string, cookie string, i int) ([]byte, error) {
-	if i <= 0 {
-		return nil, fmt.Errorf("RetryGet: %w", ErrRetry)
+	var err error
+	var b []byte
+	for a := 0; a < i; a++ {
+		b, err = Httpget(url, cookie)
+		if err == nil {
+			break
+		}
 	}
-	b, err := Httpget(url, cookie)
 	if err != nil {
-		return RetryGet(url, cookie, i-1)
+		return nil, fmt.Errorf("RetryGet: %w", err)
 	}
 	return b, nil
 }
-
-var ErrRetry = errors.New("Retry out of range")
