@@ -9,7 +9,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"os/signal"
 	"strconv"
 	"sync"
 
@@ -85,18 +84,6 @@ func main() {
 			w.Done()
 		}()
 	}
-
-	cc := make(chan os.Signal, 1)
-	signal.Notify(cc, os.Interrupt)
-	go func() {
-		<-cc
-		w.Add(1)
-		cancel()
-		w.Wait()
-		save()
-		os.Exit(0)
-	}()
-
 	w.Wait()
 
 	w.Add(1)
