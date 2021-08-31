@@ -20,6 +20,11 @@ import (
 )
 
 func main() {
+	if gen {
+		save()
+		return
+	}
+
 	w := sync.WaitGroup{}
 	adl := make(chan structs.McbbsAd, 50)
 	cxt, cancel := context.WithCancel(context.Background())
@@ -27,13 +32,12 @@ func main() {
 	LimitGet := http.NewLimitGet(threadInt, sleepTime, retry)
 
 	go func() {
+		defer w.Done()
 		f, err := os.Create("data.txt")
 		if err != nil {
 			panic(err)
 		}
 		defer f.Close()
-		bw := bufio.NewWriter(f)
-		defer bw.Flush()
 		for {
 			select {
 			case <-cxt.Done():
@@ -43,8 +47,8 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				bw.Write(b)
-				bw.Write([]byte("\n"))
+				f.Write(b)
+				f.Write([]byte("\n"))
 				log.Println(string(b))
 			}
 		}
@@ -90,7 +94,11 @@ func main() {
 	}()
 
 	w.Wait()
+
+	w.Add(1)
 	cancel()
+	w.Wait()
+
 	save()
 }
 
@@ -161,6 +169,7 @@ var (
 	sleepTime int
 	c         conifg
 	m         map[string]structs.McbbsAd
+	gen       bool
 )
 
 type conifg struct {
@@ -171,6 +180,7 @@ func init() {
 	flag.IntVar(&threadInt, "thread", 8, "thread")
 	flag.IntVar(&retry, "retry", 10, "retry")
 	flag.IntVar(&sleepTime, "sleep", 3000, "sleep")
+	flag.BoolVar(&gen, "gen", false, "gen")
 	flag.Parse()
 	cookie = os.Getenv("cookie")
 
