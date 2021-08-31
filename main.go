@@ -7,6 +7,7 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"log"
 	"os"
 	"os/signal"
 	"strconv"
@@ -44,6 +45,7 @@ func main() {
 				}
 				bw.Write(b)
 				bw.Write([]byte("\n"))
+				log.Println(string(b))
 			}
 		}
 	}()
