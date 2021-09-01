@@ -22,6 +22,8 @@ jobs:
 
     - name: Start auto update
       run: go run main.go
+      env:
+        cookie: ${{ secrets.cookie }}
 
     - name: make html
       run: go run main.go -m
