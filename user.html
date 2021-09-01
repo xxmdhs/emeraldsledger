@@ -52,8 +52,8 @@
                 add(t,v.Count)
                 add(t,transformTime(v.Time + ""))
                 add(t,v.Cause)
-                if (v.Link == ""){
-                    add(t, `none`)
+                if (v.Type == "mcbbsAd"){
+                    add(t, `none（宣传栏）`)
                 }else{
                     add(t, `<a href="${v.Link}" target="_blank">link</a>`, true)
                 }
