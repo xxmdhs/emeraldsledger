@@ -22,7 +22,7 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 	if err != nil {
 		return nil, fmt.Errorf("FindPage: %w", err)
 	}
-	adCh := make(chan structs.McbbsAd, 30)
+	adCh := make(chan structs.McbbsAd, len(t.Variables.Postlist))
 	eCh := make(chan error, len(t.Variables.Postlist))
 
 	w := sync.WaitGroup{}
