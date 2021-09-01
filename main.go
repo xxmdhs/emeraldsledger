@@ -14,6 +14,7 @@ import (
 
 	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/mcbbsad"
+	"github.com/xxmdhs/emeraldsledger/mhtml"
 	"github.com/xxmdhs/emeraldsledger/structs"
 	"github.com/xxmdhs/emeraldsledger/thread"
 )
@@ -21,6 +22,14 @@ import (
 func main() {
 	if gen {
 		save()
+		return
+	}
+	if makeHtml {
+		b, err := os.ReadFile("data.json")
+		if err != nil {
+			panic(err)
+		}
+		mhtml.Make(b)
 		return
 	}
 
@@ -152,6 +161,7 @@ var (
 	c         conifg
 	m         map[string]structs.McbbsAd
 	gen       bool
+	makeHtml  bool
 )
 
 type conifg struct {
@@ -163,6 +173,7 @@ func init() {
 	flag.IntVar(&retry, "retry", 10, "retry")
 	flag.IntVar(&sleepTime, "sleep", 3000, "sleep")
 	flag.BoolVar(&gen, "gen", false, "gen")
+	flag.BoolVar(&makeHtml, "m", false, "m")
 	flag.Parse()
 	cookie = os.Getenv("cookie")
 

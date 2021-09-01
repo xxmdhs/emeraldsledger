@@ -1,0 +1,36 @@
+{{define "table"}}
+<!DOCTYPE html>
+<html>
+{{template "head" .}}
+
+<body>
+    <div class="container-lg px-3 my-5 markdown-body">
+        <h1>{{.Title}}</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>排名</th>
+                    <th>uid</th>
+                    <th>用户名</th>
+                    <th>使用绿宝石数</th>
+                    <th>详情</th>
+                </tr>
+            <tbody>
+                {{range .List}}
+                <tr>
+                    <td>{{.Rank}}</td>
+                    <td>{{.Uid}}</td>
+                    <td>{{.Name}}</td>
+                    <td>{{.Num}}</td>
+                    <td>{{.Link}}</td>
+                </tr>
+                {{end}} 
+            </tbody>
+        </table>
+
+        </thead>
+    </div>
+</body>
+
+</html>
+{{end}}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>绿宝石账单</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xmdhs/searchqanda/style.css">
+    <script>
+        function Form() {
+            let uid = document.querySelector("#uid").value.toString();
+            if (uid == "") {
+                return;
+            }
+            result(uid);
+            return false;
+        }
+        window.addEventListener("load", () => {
+            let u = new URL(window.location.href);
+            let uid = u.searchParams.get("uid");
+            if (uid) {
+                result(uid);
+            }
+            let f = document.getElementById("getuid");
+            f.addEventListener("submit", function (event) {
+                event.preventDefault();
+                Form();
+            });
+        })
+
+        let data = null;
+        async function result(uid) {
+            if (data == null) {
+                let r = await fetch("./data.json")
+                data = await r.json()
+            }
+            let temp = []
+            let all = 0
+            for (const v in data){
+                if (data[v].Uid == uid){
+                    temp.push(data[v])
+                    all += data[v].Count
+                }
+            }
+            temp.sort((a,b)=>{return b.Time - a.Time})
+
+            for (const v of temp){
+                let t = document.createElement("tr")                
+                add(t,v.Count)
+                add(t,transformTime(v.Time + ""))
+                add(t,v.Cause)
+                if (v.Link == ""){
+                    add(t, `none`)
+                }else{
+                    add(t, `<a href="${v.Link}" target="_blank">link</a>`, true)
+                }
+                document.querySelector("#result > table > tbody").appendChild(t)
+            }
+            document.querySelector("#result > p").textContent = `总数 ${all}`
+            document.querySelector("#result").removeAttribute("style")
+        }
+
+        function add(item, v, h) {
+            let t = document.createElement("td")
+            if (h === true) {
+                t.innerHTML = v
+            } else {
+                t.innerText = v
+            }
+            item.appendChild(t)
+        }
+
+        function transformTime(timestamp) {
+            if (typeof timestamp == "string") {
+                if (!isNaN(new Number(timestamp))) {
+                    var time = new Date(timestamp * 1000);
+                    var y = time.getFullYear();
+                    var M = time.getMonth() + 1;
+                    var d = time.getDate();
+                    var h = time.getHours();
+                    var m = time.getMinutes();
+                    return y + '-' + addZero(M) + '-' + addZero(d) + ' ' + addZero(h) + ':' + addZero(m)
+                } else {
+                    return timestamp
+                }
+            } else {
+                return '';
+            }
+        }
+        function addZero(m) {
+            return m < 10 ? '0' + m : m;
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="container-lg px-3 my-5 markdown-body">
+        <h1>绿宝石账单</h1>
+        <form id="getuid">
+            <input type="search" id="uid">
+            <input type="submit" value="查询">
+        </form>
+        <div id="result" style="display: none;">
+            <br>
+            <p></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>使用绿宝石数</th>
+                        <th>时间</th>
+                        <th>原因</th>
+                        <th>链接</th>
+                    </tr>
+                <tbody></tbody>
+            </table>
+
+            </thead>
+        </div>
+    </div>
+</body>
+
+</html>
