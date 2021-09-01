@@ -1,0 +1,35 @@
+name: Auto update
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+  
+jobs:
+  tieba_sign:
+    name: Auto update
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.16
+      id: go
+
+    - name: Clone repo 
+      uses: actions/checkout@v2
+
+    - name: Start auto update
+      run: go run main.go
+
+    - name: make html
+      run: go run main.go -m
+
+    - name: Git
+      run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "auto update"
+          git push
