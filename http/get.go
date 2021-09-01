@@ -11,7 +11,7 @@ import (
 )
 
 var c = http.Client{
-	Timeout: 10 * time.Second,
+	Timeout: 15 * time.Second,
 }
 
 func Httpget(url string, cookie string) ([]byte, error) {

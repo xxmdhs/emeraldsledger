@@ -21,12 +21,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Start auto update
-      run: go run main.go
+      run: go run . -retry 50
       env:
         cookie: ${{ secrets.cookie }}
 
     - name: make html
-      run: go run main.go -m
+      run: go run . -m
 
     - name: Git
       run: |
