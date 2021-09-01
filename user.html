@@ -31,6 +31,8 @@
 
         let data = null;
         async function result(uid) {
+            document.querySelector("#result > table > tbody").innerHTML = "";
+
             if (data == null) {
                 let r = await fetch("./data.json")
                 data = await r.json()
