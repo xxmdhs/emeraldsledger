@@ -39,9 +39,11 @@
             }
             let temp = []
             let all = 0
+            let name;
             for (const v in data){
                 if (data[v].Uid == uid){
                     temp.push(data[v])
+                    name = data[v].Username
                     all += data[v].Count
                 }
             }
@@ -59,7 +61,7 @@
                 }
                 document.querySelector("#result > table > tbody").appendChild(t)
             }
-            document.querySelector("#result > p").textContent = `总数 ${all}`
+            document.querySelector("#result > p").textContent = `${name} 总数 ${all}`
             document.querySelector("#result").removeAttribute("style")
         }
 
