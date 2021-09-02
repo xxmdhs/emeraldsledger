@@ -22,10 +22,12 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 	if err != nil {
 		return nil, fmt.Errorf("FindPage: %w", err)
 	}
-	adCh := make(chan structs.McbbsAd, len(t.Variables.Postlist))
-	eCh := make(chan error, len(t.Variables.Postlist))
+	adCh := make(chan structs.McbbsAd, 20)
+	eCh := make(chan error, 20)
 
 	w := sync.WaitGroup{}
+
+	cxt, c := context.WithCancel(context.Background())
 
 	for _, v := range t.Variables.Postlist {
 		if v.Tid != "" && v.Pid != "" {
@@ -35,7 +37,11 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 				defer w.Done()
 				b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+v.Tid+`&pid=`+v.Pid+`&inajax=1`, "")
 				if err != nil {
-					eCh <- fmt.Errorf("FindPage: %w", err)
+					select {
+					case eCh <- fmt.Errorf("FindPage: %w", err):
+					case <-cxt.Done():
+						return
+					}
 				}
 				pl := getpinfen(b)
 				for _, vv := range pl {
@@ -44,7 +50,10 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 							continue
 						}
 						w.Add(1)
-						adCh <- structs.McbbsAd{
+						select {
+						case <-cxt.Done():
+							return
+						case adCh <- structs.McbbsAd{
 							Uid:      v.Authorid,
 							Username: v.Username,
 							Count:    vv.Num,
@@ -52,13 +61,13 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 							Cause:    v.Message,
 							Type:     stid,
 							Link:     "https://www.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=" + stid + "&pid=" + v.Pid,
+						}:
 						}
 					}
 				}
 			}()
 		}
 	}
-	cxt, c := context.WithCancel(context.Background())
 
 	go func() {
 		w.Wait()
@@ -73,6 +82,7 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 			ads = append(ads, ad)
 			w.Done()
 		case err := <-eCh:
+			c()
 			return nil, err
 		case <-cxt.Done():
 			return ads, nil
