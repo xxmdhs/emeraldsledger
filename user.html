@@ -57,7 +57,7 @@
                 if (v.Type == "mcbbsAd") {
                     add(t, `none（宣传栏）`)
                 } else {
-                    add(t, `<a href="${v.Link}" target="_blank">link</a>`, true)
+                    add(t, `<a href="${htmlEncode(v.Link)}" target="_blank">link</a>`, true)
                 }
                 document.querySelector("#result > table > tbody").appendChild(t)
             }
