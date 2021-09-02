@@ -22,7 +22,7 @@ type McbbsAd struct {
 }
 
 func (m *McbbsAd) Hash() string {
-	var s = m.Uid + m.Username + strconv.Itoa(m.Count) + strconv.FormatInt(m.Time, 10) + m.Cause + m.Type + m.Link
+	var s = m.Uid + m.Username + strconv.Itoa(m.Count) + strconv.FormatInt(m.Time, 10) + m.Type + m.Link
 	h := sha256.New()
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))

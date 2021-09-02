@@ -40,28 +40,30 @@
             let temp = []
             let all = 0
             let name;
-            for (const v in data){
-                if (data[v].Uid == uid){
+            for (const v in data) {
+                if (data[v].Uid == uid) {
                     temp.push(data[v])
                     name = data[v].Username
                     all += data[v].Count
                 }
             }
-            temp.sort((a,b)=>{return b.Time - a.Time})
+            temp.sort((a, b) => { return b.Time - a.Time })
 
-            for (const v of temp){
-                let t = document.createElement("tr")                
-                add(t,v.Count)
-                add(t,transformTime(v.Time + ""))
-                add(t,v.Cause)
-                if (v.Type == "mcbbsAd"){
+            for (const v of temp) {
+                let t = document.createElement("tr")
+                add(t, v.Count)
+                add(t, transformTime(v.Time + ""))
+                add(t, v.Cause)
+                if (v.Type == "mcbbsAd") {
                     add(t, `none（宣传栏）`)
-                }else{
+                } else {
                     add(t, `<a href="${v.Link}" target="_blank">link</a>`, true)
                 }
                 document.querySelector("#result > table > tbody").appendChild(t)
             }
-            document.querySelector("#result > p").textContent = `${name} 总数 ${all}`
+            let p = document.createElement("p")
+            p.innerHTML = `${htmlEncode(name)}(${htmlEncode(uid)})<br>总数 ${htmlEncode(all)}`
+            document.querySelector("#result").insertBefore(p, document.querySelector("#result > table"))
             document.querySelector("#result").removeAttribute("style")
         }
 
@@ -95,6 +97,12 @@
         function addZero(m) {
             return m < 10 ? '0' + m : m;
         }
+
+        function htmlEncode(str) {
+            var ele = document.createElement('span');
+            ele.appendChild(document.createTextNode(str));
+            return ele.innerHTML;
+        }
     </script>
 
 </head>
@@ -108,11 +116,10 @@
         </form>
         <div id="result" style="display: none;">
             <br>
-            <p></p>
             <table>
                 <thead>
                     <tr>
-                        <th>使用绿宝石数</th>
+                        <th>绿宝石数</th>
                         <th>时间</th>
                         <th>原因</th>
                         <th>链接</th>
