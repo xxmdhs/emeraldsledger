@@ -40,8 +40,8 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 					select {
 					case eCh <- fmt.Errorf("FindPage: %w", err):
 					case <-cxt.Done():
-						return
 					}
+					return
 				}
 				pl := getpinfen(b)
 				for _, vv := range pl {
@@ -52,6 +52,7 @@ func FindPage(tid, page int, LimitGet *http.LimitGet) ([]structs.McbbsAd, error)
 						w.Add(1)
 						select {
 						case <-cxt.Done():
+							w.Done()
 							return
 						case adCh <- structs.McbbsAd{
 							Uid:      v.Authorid,
