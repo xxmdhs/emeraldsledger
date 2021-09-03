@@ -5,55 +5,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>绿宝石账单</title>
+    <title>绿宝石列表</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xmdhs/searchqanda/style.css">
     <script>
-        function Form() {
-            let uid = document.querySelector("#uid").value.toString();
-            if (uid == "") {
-                return;
-            }
-            result(uid);
-            return false;
-        }
-        window.addEventListener("load", () => {
-            let u = new URL(window.location.href);
-            let uid = u.searchParams.get("uid");
-            if (uid) {
-                result(uid);
-                document.querySelector("#getuid").parentNode.removeChild(document.querySelector("#getuid"));
-                document.querySelector("#br").parentNode.removeChild(document.querySelector("#br"));
-                return
-            }
-            let f = document.getElementById("getuid");
-            f.addEventListener("submit", function (event) {
-                event.preventDefault();
-                Form();
-            });
-        })
-
-        let data = null;
-        async function result(uid) {
-            document.querySelector("#result > table > tbody").innerHTML = "";
-
-            if (data == null) {
-                let r = await fetch("./data.json")
-                data = await r.json()
-            }
+        (async () => {
+            let r = await fetch("./data.json")
+            let data = await r.json()
             let temp = []
             let all = 0
             let name;
             for (const v in data) {
-                if (data[v].Uid == uid) {
-                    temp.push(data[v])
-                    name = data[v].Username
-                    all += data[v].Count
-                }
+                temp.push(data[v])
+                name = data[v].Username
+                all += data[v].Count
             }
             temp.sort((a, b) => { return b.Time - a.Time })
 
             for (const v of temp) {
                 let t = document.createElement("tr")
+                add(t, v.Uid)
+                add(t, v.Username)
                 add(t, v.Count)
                 add(t, transformTime(v.Time + ""))
                 add(t, v.Cause)
@@ -64,12 +35,8 @@
                 }
                 document.querySelector("#result > table > tbody").appendChild(t)
             }
-            document.querySelector("#userinfo").innerHTML = ""
-            let p = document.createElement("p")
-            p.innerHTML = `${htmlEncode(name)}(${htmlEncode(uid)})<br>总数 ${htmlEncode(all)}`
-            document.querySelector("#userinfo").appendChild(p)
-            document.querySelector("#result").removeAttribute("style")
-        }
+        })()
+
 
         function add(item, v, h) {
             let t = document.createElement("td")
@@ -113,17 +80,13 @@
 
 <body>
     <div class="container-lg px-3 my-5 markdown-body">
-        <h1>绿宝石账单</h1>
-        <form id="getuid">
-            <input type="search" id="uid">
-            <input type="submit" value="查询">
-        </form>
-        <div id="result" style="display: none;">
-            <br id="br">
-            <div id="userinfo"></div>
+        <h1>绿宝石列表</h1>
+        <div id="result">
             <table>
                 <thead>
                     <tr>
+                        <th>uid</th>
+                        <th>用户名</th>
                         <th>绿宝石数</th>
                         <th>时间</th>
                         <th>原因</th>
