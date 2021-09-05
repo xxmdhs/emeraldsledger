@@ -10,7 +10,9 @@ import (
 	"time"
 )
 
-var c = http.Client{}
+var c = http.Client{
+	Timeout: time.Second * 60,
+}
 
 func Httpget(url string, cookie string) ([]byte, error) {
 	reqs, err := http.NewRequest("GET", url, nil)
