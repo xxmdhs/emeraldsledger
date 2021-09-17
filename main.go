@@ -1,23 +1,25 @@
 package main
 
 import (
-	"bufio"
 	"context"
-	"encoding/json"
 	"errors"
 	"flag"
-	"io"
 	"log"
 	"os"
 	"strconv"
 	"sync"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/mcbbsad"
 	"github.com/xxmdhs/emeraldsledger/mhtml"
 	"github.com/xxmdhs/emeraldsledger/structs"
 	"github.com/xxmdhs/emeraldsledger/thread"
+
+	"go.etcd.io/bbolt"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func main() {
 	if gen {
@@ -41,11 +43,18 @@ func main() {
 
 	go func() {
 		defer w.Done()
-		f, err := os.Create("data.txt")
+		db, err := bbolt.Open("data.txt", 0600, nil)
 		if err != nil {
 			panic(err)
 		}
-		defer f.Close()
+		defer db.Close()
+		err = db.Update(func(t *bbolt.Tx) error {
+			_, err := t.CreateBucketIfNotExists([]byte("emeralds"))
+			return err
+		})
+		if err != nil {
+			panic(err)
+		}
 		for {
 			select {
 			case <-cxt.Done():
@@ -55,8 +64,12 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				f.Write(b)
-				f.Write([]byte("\n"))
+				err = db.Update(func(t *bbolt.Tx) error {
+					return t.Bucket([]byte("emeralds")).Put([]byte(ad.Hash()), b)
+				})
+				if err != nil {
+					panic(err)
+				}
 				log.Println(string(b))
 				w.Done()
 			}
@@ -103,28 +116,27 @@ func main() {
 }
 
 func save() {
-	f, err := os.Open("data.txt")
+	db, err := bbolt.Open("data.txt", 0600, nil)
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
-	bs := bufio.NewReader(f)
-	for {
-		b, err := bs.ReadBytes('\n')
-		if err != nil {
-			if !errors.Is(err, io.EOF) {
+	defer db.Close()
+	err = db.View(func(t *bbolt.Tx) error {
+		return t.Bucket([]byte("emeralds")).ForEach(func(k, v []byte) error {
+			if len(v) == 0 {
+				return nil
+			}
+			var ad structs.McbbsAd
+			err = json.Unmarshal(v, &ad)
+			if err != nil {
 				panic(err)
 			}
-		}
-		if len(b) == 0 {
-			break
-		}
-		var ad structs.McbbsAd
-		err = json.Unmarshal(b, &ad)
-		if err != nil {
-			panic(err)
-		}
-		m[ad.Hash()] = ad
+			m[string(k)] = ad
+			return nil
+		})
+	})
+	if err != nil {
+		panic(err)
 	}
 	ff, err := os.Create("data.json")
 	if err != nil {
