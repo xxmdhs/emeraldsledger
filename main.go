@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"log"
@@ -9,7 +10,6 @@ import (
 	"strconv"
 	"sync"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/xxmdhs/emeraldsledger/http"
 	"github.com/xxmdhs/emeraldsledger/mcbbsad"
 	"github.com/xxmdhs/emeraldsledger/mhtml"
@@ -18,8 +18,6 @@ import (
 
 	"go.etcd.io/bbolt"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func main() {
 	if gen {
