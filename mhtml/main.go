@@ -61,6 +61,7 @@ func Make(b []byte) {
 	tableHtml(m, "table90.html", "三月内绿宝石使用排行", day90)
 	tableHtml(m, "table365.html", "一年内绿宝石使用排行", day365)
 	tableHtml(m, "all.html", "总绿宝石使用排行", 0)
+	tableSvg(m, "table30.svg", "一月内绿宝石使用排行", day30)
 }
 
 func tableHtml(m map[string]structs.McbbsAd, filename, Title string, btime int64) {
@@ -70,6 +71,18 @@ func tableHtml(m map[string]structs.McbbsAd, filename, Title string, btime int64
 	}
 	defer f.Close()
 	err = t.ExecuteTemplate(f, "table", table{Title: Title, List: makeTable(m, btime)})
+	if err != nil {
+		panic(err)
+	}
+}
+
+func tableSvg(m map[string]structs.McbbsAd, filename, Title string, btime int64) {
+	f, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	err = svgTep.ExecuteTemplate(f, "table.svg", table{Title: Title, List: makeTable(m, btime)})
 	if err != nil {
 		panic(err)
 	}
