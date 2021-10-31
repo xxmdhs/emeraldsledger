@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="350" height="100" xmlns="http://www.w3.org/2000/svg">
+    <foreignObject width="350" height="100">
+        <body xmlns="http://www.w3.org/1999/xhtml">
+            <div class="a">
+                <span>总绿宝石使用数：</span>
+                <span class="b">-24739</span>
+            </div>
+        </body>
+        <style>
+            .a {
+                display: flex;
+                align-items: center;
+                padding-left: 15px;
+                width: 20em;
+                height: 5em;
+                border-radius: 15px;
+                background-color: rgb(255, 255, 255);
+                box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                font-size: 16px;
+                word-wrap: break-word;
+            }
+        
+            .b {
+                animation: test 3s;
+            }
+        
+            @keyframes test {
+                0% {
+                    filter: opacity(0);
+                }
+        
+                100% {
+                    filter: opacity(1);
+                }
+            }
+        </style>
+    </foreignObject>
+</svg>

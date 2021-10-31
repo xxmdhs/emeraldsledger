@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	templateTet "text/template"
 	"time"
 
 	"github.com/xxmdhs/emeraldsledger/structs"
@@ -17,9 +18,15 @@ var f embed.FS
 
 var t *template.Template
 
+var svgTep *templateTet.Template
+
 func init() {
 	var err error
-	t, err = template.ParseFS(f, "template/*")
+	t, err = template.ParseFS(f, "template/*.html")
+	if err != nil {
+		panic(err)
+	}
+	svgTep, err = templateTet.ParseFS(f, "template/*.svg")
 	if err != nil {
 		panic(err)
 	}
@@ -83,6 +90,15 @@ func all(m map[string]structs.McbbsAd) {
 	}
 	defer f.Close()
 	err = t.ExecuteTemplate(f, "index", temp{Title: "绿宝石", AllEmeralds: all})
+	if err != nil {
+		panic(err)
+	}
+	ff, err := os.Create("count.svg")
+	if err != nil {
+		panic(err)
+	}
+	defer ff.Close()
+	err = svgTep.ExecuteTemplate(ff, "count.svg", temp{AllEmeralds: all})
 	if err != nil {
 		panic(err)
 	}
