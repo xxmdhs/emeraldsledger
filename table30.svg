@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="800" height="1500" xmlns="http://www.w3.org/2000/svg">
-    <foreignObject width="800" height="1500">
+<svg width="450" height="1500" xmlns="http://www.w3.org/2000/svg">
+    <foreignObject width="450" height="1500">
         <body xmlns="http://www.w3.org/1999/xhtml">
             <h1>一月内绿宝石使用排行</h1>
             <table>
@@ -37,8 +37,8 @@
                     
                     <tr>
                         <td>4</td>
-                        <td>1744069</td>
-                        <td>yumc</td>
+                        <td>390164</td>
+                        <td>梨木利亚</td>
                         <td>-22</td>
                     </tr>
                     
@@ -51,8 +51,8 @@
                     
                     <tr>
                         <td>6</td>
-                        <td>390164</td>
-                        <td>梨木利亚</td>
+                        <td>1744069</td>
+                        <td>yumc</td>
                         <td>-22</td>
                     </tr>
                     
@@ -79,29 +79,29 @@
                     
                     <tr>
                         <td>10</td>
-                        <td>2822005</td>
-                        <td>月之暗面z</td>
-                        <td>-1</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>11</td>
                         <td>1538310</td>
                         <td>扣总</td>
                         <td>-1</td>
                     </tr>
                     
                     <tr>
-                        <td>12</td>
+                        <td>11</td>
                         <td>4352084</td>
                         <td>qixiaomi</td>
                         <td>-1</td>
                     </tr>
                     
                     <tr>
-                        <td>13</td>
+                        <td>12</td>
                         <td>3358843</td>
                         <td>柒月大大a</td>
+                        <td>-1</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>13</td>
+                        <td>2822005</td>
+                        <td>月之暗面z</td>
                         <td>-1</td>
                     </tr>
                      
@@ -109,34 +109,6 @@
             </table>
         </body>
         <style>
-    .a {
-        display: flex;
-        align-items: center;
-        padding-left: 15px;
-        width: 20em;
-        height: 5em;
-        border-radius: 15px;
-        background-color: rgb(255, 255, 255);
-        box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        font-size: 16px;
-        word-wrap: break-word;
-    }
-
-    .b {
-        animation: test 3s;
-    }
-
-    @keyframes test {
-        0% {
-            filter: opacity(0);
-        }
-
-        100% {
-            filter: opacity(1);
-        }
-    }
-
     *:last-child {
         margin-bottom: 0 !important;
     }
