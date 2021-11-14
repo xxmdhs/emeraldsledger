@@ -1,13 +1,17 @@
 <template>
     <el-container>
         <el-header class="header">
-            <el-menu mode="horizontal" router>
-                <el-menu-item index="1" :route="{path:'/'}">Home</el-menu-item>
-                <el-menu-item index="2" :route="{path:'/user'}">搜索</el-menu-item>
-            </el-menu>
+            <div class="main">
+                <el-menu mode="horizontal" router :default-active="'1'">
+                    <el-menu-item index="1" :route="{ path: '/' }">Home</el-menu-item>
+                    <el-menu-item index="2" :route="{ path: '/user' }">搜索</el-menu-item>
+                </el-menu>
+            </div>
         </el-header>
-        <el-main class="main">
-            <router-view></router-view>
+        <el-main>
+            <div class="main">
+                <router-view></router-view>
+            </div>
         </el-main>
     </el-container>
 </template>
@@ -20,18 +24,16 @@ import { ElContainer } from 'element-plus';
 
 <style scoped>
 .main {
-    font-size: 16px;
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
         "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-    padding-right: 30px;
-    padding-left: 30px;
+    max-width: 1024px;
+    margin-right: auto;
+    margin-left: auto;
 }
 .header {
     background-color: #fff;
-    font-size: 16px;
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
         "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-    border-bottom: 1px solid #dcdfe6;
 }
 </style>
 

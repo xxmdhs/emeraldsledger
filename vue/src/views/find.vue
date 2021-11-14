@@ -28,5 +28,6 @@ function click() {
     justify-content: center;
     align-items: center;
     max-width: max-content;
+    column-gap: 5px;
 }
 </style>

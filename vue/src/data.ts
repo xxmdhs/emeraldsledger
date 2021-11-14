@@ -6,7 +6,7 @@ export async function getData(): Promise<emdata[]> {
     }
     let d: r
     try {
-        let r = await fetch('/data.json');
+        let r = await fetch('https://quiet-disk-7a77.xmdhs.workers.dev/https://emerald.xmdhs.top/data.json');
         d = await r.json();
     } catch (e) {
         console.warn(e);
