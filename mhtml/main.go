@@ -54,13 +54,13 @@ func Make(b []byte) {
 	all(m)
 
 	day30 := int64((time.Hour * 24 * 30).Seconds())
-	day90 := int64((time.Hour * 24 * 90).Seconds())
-	day365 := int64((time.Hour * 24 * 365).Seconds())
+	//day90 := int64((time.Hour * 24 * 90).Seconds())
+	//day365 := int64((time.Hour * 24 * 365).Seconds())
 
-	tableHtml(m, "table30.html", "一月内绿宝石使用排行", day30)
-	tableHtml(m, "table90.html", "三月内绿宝石使用排行", day90)
-	tableHtml(m, "table365.html", "一年内绿宝石使用排行", day365)
-	tableHtml(m, "all.html", "总绿宝石使用排行", 0)
+	//tableHtml(m, "table30.html", "一月内绿宝石使用排行", day30)
+	//tableHtml(m, "table90.html", "三月内绿宝石使用排行", day90)
+	//tableHtml(m, "table365.html", "一年内绿宝石使用排行", day365)
+	//tableHtml(m, "all.html", "总绿宝石使用排行", 0)
 	tableSvg(m, "table30.svg", "一月内绿宝石使用排行", day30)
 }
 
@@ -97,15 +97,15 @@ func all(m map[string]structs.McbbsAd) {
 		Title       string
 		AllEmeralds int
 	}
-	f, err := os.Create("index.html")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	err = t.ExecuteTemplate(f, "index", temp{Title: "绿宝石", AllEmeralds: all})
-	if err != nil {
-		panic(err)
-	}
+	//f, err := os.Create("index.html")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//defer f.Close()
+	//err = t.ExecuteTemplate(f, "index", temp{Title: "绿宝石", AllEmeralds: all})
+	//if err != nil {
+	//	panic(err)
+	//}
 	ff, err := os.Create("count.svg")
 	if err != nil {
 		panic(err)
