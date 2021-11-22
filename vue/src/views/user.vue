@@ -8,7 +8,11 @@
         <el-table-column v-if="isall" prop="Uid" label="uid" />
         <el-table-column prop="Count" label="绿宝石数" sortable />
         <el-table-column prop="time" label="时间" sortable />
-        <el-table-column prop="Cause" label="原因" />
+        <el-table-column prop="Cause" label="原因">
+            <template #default="{ row }">
+               <span v-html="row.Cause"></span>
+            </template>
+        </el-table-column>
         <el-table-column label="链接">
             <template #default="props">
                 <a
