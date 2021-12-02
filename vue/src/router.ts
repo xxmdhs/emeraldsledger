@@ -3,6 +3,11 @@ import index from './views/index.vue'
 import table from './views/table.vue'
 import find from './views/find.vue'
 
+declare module 'vue-router' {
+  interface RouteMeta {
+    scrollToTop?: boolean
+  }
+}
 
 function dynamicPropsFn(route: any) {
   let t: string = route.params.table
@@ -65,17 +70,17 @@ const router = createRouter({
         behavior: 'smooth',
       }
     }
-      let position: { left: number, top: number } = {
-        left: 0,
-        top: 0,
-      }
-      if (to.meta.scrollToTop) {
-        position.left = 0
-        position.top = 0
-      } else {
-        return false
-      }
-      return position
+    let position: { left: number, top: number } = {
+      left: 0,
+      top: 0,
+    }
+    if (to.meta.scrollToTop) {
+      position.left = 0
+      position.top = 0
+    } else {
+      return false
+    }
+    return position
   },
   routes
 })
