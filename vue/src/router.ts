@@ -37,6 +37,7 @@ const routes: RouteRecordRaw[] = [
     props: route => ({
       uid: Number(route.params.uid),
     }),
+    meta: { scrollToTop: true }
   },
   {
     path: '/list',
@@ -44,6 +45,7 @@ const routes: RouteRecordRaw[] = [
     props: {
       uid: 0
     },
+    meta: { scrollToTop: true }
   },
   {
     path: '/user',
@@ -53,6 +55,28 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({
   history: createWebHashHistory(),
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) {
+      return savedPosition
+    }
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+      }
+    }
+      let position: { left: number, top: number } = {
+        left: 0,
+        top: 0,
+      }
+      if (to.meta.scrollToTop) {
+        position.left = 0
+        position.top = 0
+      } else {
+        return false
+      }
+      return position
+  },
   routes
 })
 
