@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRefs, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { getData } from '../data';
 import { ElTable, ElTableColumn } from 'element-plus';
 
@@ -25,7 +25,6 @@ const props = defineProps({
         default: 30
     }
 });
-let p = toRefs(props)
 
 let title = ref('');
 
@@ -43,22 +42,22 @@ let list = ref([] as tdItem[]);
 
 onMounted(() => {
     watchEffect(async () => {
-        if (p.day.value == 0) {
+        if (props.day == 0) {
             title.value = `总绿宝石使用排行`;
             document.title = title.value;
         } else {
-            title.value = `${p.day.value} 天内绿宝石使用排行`;
+            title.value = `${props.day} 天内绿宝石使用排行`;
             document.title = title.value;
         }
         list.value = []
 
         let l = await getData()
         let utime = new Date().getTime() / 1000;
-        let d = p.day.value * 24 * 3600;
+        let d = props.day * 24 * 3600;
         let tl: tdItem[] = []
         let m: { [key: string]: tdItem } = {}
         for (const v of l) {
-            if (utime - Number(v.Time) < d || p.day.value == 0) {
+            if (utime - Number(v.Time) < d || props.day == 0) {
                 let uid = String(v.Uid);
                 if (m[uid]) {
                     m[uid].count += Number(v.Count);

@@ -5,12 +5,17 @@
         总数： {{ count }}
     </p>
     <el-table :data="list">
-        <el-table-column v-if="isall" prop="Uid" label="uid" />
+        <el-table-column v-if="isall" prop="Uid" label="uid">
+            <template #default="{ row }">
+                <router-link :to="'/user/' + row.Uid">{{ row.Uid }}</router-link>
+            </template>
+        </el-table-column>
+        <el-table-column v-if="isall" prop="Username" label="用户名" />
         <el-table-column prop="Count" label="绿宝石数" sortable />
         <el-table-column prop="time" label="时间" sortable />
         <el-table-column prop="Cause" label="原因">
             <template #default="{ row }">
-               <span v-html="row.Cause"></span>
+                <span v-html="row.Cause"></span>
             </template>
         </el-table-column>
         <el-table-column label="链接">
@@ -28,8 +33,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect, toRefs } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { getData, emdata } from '../data';
+import { RouterLink } from 'vue-router';
+
 let username = ref('');
 let count = ref(0);
 let isall = ref(false)
@@ -47,42 +54,46 @@ const props = defineProps({
         required: true,
     }
 });
-let p = toRefs(props);
 
 onMounted(() => {
-    watchEffect(async () => {
-        let d = await getData()
-        let l = [] as emdata[]
-
-        for (const v in d) {
-            if (d[v].Uid == String(p.uid.value) || p.uid.value == 0) {
-                username.value = d[v].Username;
-                count.value += d[v].Count;
-                l.push(d[v])
-            }
-        }
-        if (p.uid.value == 0) {
-            isall.value = true
-            document.title = '绿宝石列表'
-        } else {
-            document.title = `${username.value} 的绿宝石使用列表`
-        }
-
-        l.sort((a, b) => {
-            return b.Time - a.Time
-        })
-        for (const v of l) {
-            let vv = v as td
-            if (vv.Link == "" && vv.Type == "mcbbsAd") {
-                vv.v = "none（宣传栏）"
-            } else {
-                vv.v = "link"
-            }
-            vv.time = transformTime(vv.Time)
-            list.value.push(vv)
-        }
-    });
+    watchEffect(() => {
+        getUser(props.uid);
+    })
 })
+
+async function getUser(uid: number) {
+    let d = await getData()
+    let l = [] as emdata[]
+    list.value = []
+
+    for (const v in d) {
+        if (d[v].Uid == String(uid) || uid == 0) {
+            username.value = d[v].Username;
+            count.value += d[v].Count;
+            l.push(d[v])
+        }
+    }
+    if (uid == 0) {
+        isall.value = true
+        document.title = '绿宝石列表'
+    } else {
+        document.title = `${username.value} 的绿宝石使用列表`
+    }
+
+    l.sort((a, b) => {
+        return b.Time - a.Time
+    })
+    for (const v of l) {
+        let vv = v as td
+        if (vv.Link == "" && vv.Type == "mcbbsAd") {
+            vv.v = "none（宣传栏）"
+        } else {
+            vv.v = "link"
+        }
+        vv.time = transformTime(vv.Time)
+        list.value.push(vv)
+    }
+}
 
 function transformTime(timestamp: number) {
     var time = new Date(timestamp * 1000);
