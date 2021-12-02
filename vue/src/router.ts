@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw, useRoute } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw, useRoute } from 'vue-router'
 import index from './views/index.vue'
 import table from './views/table.vue'
 import find from './views/find.vue'
@@ -9,8 +9,13 @@ declare module 'vue-router' {
   }
 }
 
-function dynamicPropsFn(route: any) {
-  let t: string = route.params.table
+function dynamicPropsFn(route: RouteLocationNormalized) {
+  let t: string = ""
+  if (typeof route.params.table == "string") {
+    t = route.params.table
+  } else {
+    t = route.params.table[0]
+  }
   let l = t.match(/\d+/g)
   if (l != null && l.length > 0) {
     return {
