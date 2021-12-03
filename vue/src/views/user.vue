@@ -1,16 +1,16 @@
 <template>
-    <p v-if="!isall">
+    <p v-if="uid != 0">
         {{ username }}({{ uid }})
         <br />
         总数： {{ count }}
     </p>
     <el-table :data="list">
-        <el-table-column v-if="isall" prop="Uid" label="uid">
+        <el-table-column v-if="uid == 0" prop="Uid" label="uid">
             <template #default="{ row }">
                 <router-link :to="'/user/' + row.Uid">{{ row.Uid }}</router-link>
             </template>
         </el-table-column>
-        <el-table-column v-if="isall" prop="Username" label="用户名" />
+        <el-table-column v-if="uid == 0" prop="Username" label="用户名" />
         <el-table-column prop="Count" label="绿宝石数" sortable />
         <el-table-column prop="time" label="时间" sortable />
         <el-table-column prop="Cause" label="原因">
@@ -39,7 +39,6 @@ import { RouterLink } from 'vue-router';
 
 let username = ref('');
 let count = ref(0);
-let isall = ref(false)
 
 interface td extends emdata {
     v: string;
@@ -74,7 +73,6 @@ async function getUser(uid: number) {
         }
     }
     if (uid == 0) {
-        isall.value = true
         document.title = '绿宝石列表'
     } else {
         document.title = `${username.value} 的绿宝石使用列表`
