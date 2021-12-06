@@ -56,6 +56,7 @@ const props = defineProps({
 
 onMounted(() => {
     watchEffect(() => {
+        count.value = 0
         getUser(props.uid);
     })
 })
