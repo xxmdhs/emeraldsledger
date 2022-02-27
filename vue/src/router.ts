@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw, useRoute } from 'vue-router'
+import { createRouter, createWebHistory, RouteLocationNormalized, RouteRecordRaw, useRoute } from 'vue-router'
 import index from './views/index.vue'
 import table from './views/table.vue'
 import find from './views/find.vue'
@@ -64,7 +64,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition
