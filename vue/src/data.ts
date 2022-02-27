@@ -6,7 +6,7 @@ export async function getData(): Promise<emdata[]> {
     }
     let d: r
     try {
-        let r = await fetch('/data.json');
+        let r = await fetch("https://cdn.jsdelivr.net/gh/xxmdhs/emeraldsledger@master/data.json")
         d = await r.json();
     } catch (e) {
         console.warn(e);
