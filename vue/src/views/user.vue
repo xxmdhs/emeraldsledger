@@ -4,6 +4,8 @@
         <br />
         总数： {{ count }}
     </p>
+        <el-scrollbar>
+
     <el-table :data="list">
         <el-table-column v-if="uid == 0" prop="Uid" label="uid">
             <template #default="{ row }">
@@ -15,7 +17,7 @@
         <el-table-column prop="time" label="时间" sortable />
         <el-table-column prop="Cause" label="原因">
             <template #default="{ row }">
-                <span v-html="row.Cause"></span>
+                    <span v-html="row.Cause"></span>
             </template>
         </el-table-column>
         <el-table-column label="链接">
@@ -30,12 +32,14 @@
             </template>
         </el-table-column>
     </el-table>
+      </el-scrollbar>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, watchEffect } from 'vue';
 import { getData, emdata } from '../data';
 import { RouterLink } from 'vue-router';
+import { ElNotification } from 'element-plus';
 
 let username = ref('');
 let count = ref(0);
@@ -62,7 +66,23 @@ onMounted(() => {
 })
 
 async function getUser(uid: number) {
-    let d = await getData()
+    let d: emdata[]
+    try {
+        d = await getData()
+    } catch (e) {
+        console.warn(e);
+        ElNotification({
+            title: 'Error',
+            message: 'Could not load data',
+            type: 'error',
+            onClick: () => {
+                location.reload();
+            },
+            duration: 0,
+            showClose: false
+        })
+        return
+    }
     let l = [] as emdata[]
     list.value = []
 
@@ -107,3 +127,9 @@ function addZero(m: number): string {
     return m < 10 ? '0' + m : String(m);
 }
 </script>
+
+<style module>
+.minwidth {
+    min-width: 20em;
+}
+</style>

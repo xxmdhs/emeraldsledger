@@ -26,16 +26,33 @@
 </template>
 
 <script setup lang="ts">
+import { ElNotification } from 'element-plus';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { emdata, getData } from '../data';
+
 let all = ref(0)
 
-import { getData } from '../data'
-
 onMounted(async () => {
-    let data = await getData()
+    let d: emdata[]
+    try {
+        d = await getData()
+    } catch (e) {
+        console.warn(e);
+        ElNotification({
+            title: 'Error',
+            message: 'Could not load data',
+            type: 'error',
+            onClick: () => {
+                location.reload();
+            },
+            duration: 0,
+            showClose: false
+        })
+        return
+    }
     let All = 0
-    for (const v of data) {
+    for (const v of d) {
         All += v.Count
     }
     all.value = All

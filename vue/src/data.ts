@@ -1,27 +1,10 @@
-import { ElNotification } from 'element-plus'
 
 export async function getData(): Promise<emdata[]> {
     if (data.length > 0) {
         return data;
     }
-    let d: r
-    try {
-        let r = await fetch("https://cdn.jsdelivr.net/gh/xxmdhs/emeraldsledger@master/data.json")
-        d = await r.json();
-    } catch (e) {
-        console.warn(e);
-        ElNotification({
-            title: 'Error',
-            message: 'Could not load data',
-            type: 'error',
-            onClick: () => {
-                location.reload();
-            },
-            duration: 0,
-            showClose: false
-        })
-        return [];
-    }
+    let r = await fetch("https://cdn.jsdelivr.net/gh/xxmdhs/emeraldsledger@master/data.json")
+    let d: r = await r.json();
     let l: emdata[] = []
     for (const k in d) {
         l.push(d[k]);
