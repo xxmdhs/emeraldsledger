@@ -4,9 +4,7 @@
         <br />
         总数： {{ count }}
     </p>
-        <el-scrollbar>
-
-    <el-table :data="list">
+    <el-table :data="list" >
         <el-table-column v-if="uid == 0" prop="Uid" label="uid">
             <template #default="{ row }">
                 <router-link :to="'/user/' + row.Uid">{{ row.Uid }}</router-link>
@@ -15,9 +13,9 @@
         <el-table-column v-if="uid == 0" prop="Username" label="用户名" />
         <el-table-column prop="Count" label="绿宝石数" sortable />
         <el-table-column prop="time" label="时间" sortable />
-        <el-table-column prop="Cause" label="原因">
+        <el-table-column prop="Cause" label="原因" min-width="300">
             <template #default="{ row }">
-                    <span v-html="row.Cause"></span>
+                <span v-html="row.Cause"></span>
             </template>
         </el-table-column>
         <el-table-column label="链接">
@@ -32,7 +30,6 @@
             </template>
         </el-table-column>
     </el-table>
-      </el-scrollbar>
 </template>
 
 <script setup lang="ts">
@@ -129,7 +126,4 @@ function addZero(m: number): string {
 </script>
 
 <style module>
-.minwidth {
-    min-width: 20em;
-}
 </style>
