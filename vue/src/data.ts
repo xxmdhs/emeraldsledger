@@ -3,7 +3,7 @@ export async function getData(): Promise<emdata[]> {
     if (data.length > 0) {
         return data;
     }
-    let r = await fetch("https://cdn.jsdelivr.net/gh/xxmdhs/emeraldsledger@master/data.json")
+    let r = await fetch("https://emerald.xmdhs.top/data.json")
     let d: r = await r.json();
     let l: emdata[] = []
     for (const k in d) {
