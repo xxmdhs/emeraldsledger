@@ -152,7 +152,7 @@ func save() {
 
 func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsAd, w *sync.WaitGroup) {
 	for i := 0; i < page; i++ {
-		ad, err := thread.FindPage(tid, i, LimitGet)
+		ad, err := thread.FindPage(tid, i, cookie, LimitGet)
 		if err != nil {
 			panic(err)
 		}
