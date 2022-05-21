@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/xxmdhs/emeraldsledger/http"
@@ -90,10 +91,10 @@ func FindPage(tid, page int, cookie string, LimitGet *http.LimitGet) ([]structs.
 var ErrNotFind = fmt.Errorf("not find")
 
 var (
-	pagePidReg = regexp.MustCompile(`"forum.php\?mod=redirect&goto=findpost&ptid=\d{1,10}&pid=(\d{1,13}?)"`)
+	pagePidReg = regexp.MustCompile(`<div id="post_(\d{1,15}?)".*?>`)
 	postReg    = regexp.MustCompile(`<div id="post_\d{1,20}".*?>[\s\S]*?<tr class="ad">`)
-	uidReg     = regexp.MustCompile(`<div class="authi"><a href=".*?(\d{1,15})" target="_blank" class="xw1">(.{1,15}?)</a>`)
-	msgReg     = regexp.MustCompile(`<td class="t_f" id="postmessage_\d{1,20}">\n*([\s\S]*?)</td>[\s\S]*?<div id="comment_\d{1,20}" class="cm">`)
+	uidReg     = regexp.MustCompile(`<div class="authi"><a href=".*?(\d{1,15})" target="_blank" class="xw1".*?>(.{1,15}?)</a>`)
+	msgReg     = regexp.MustCompile(`<td class="t_f" id="postmessage_\d{1,20}".*?>\n*([\s\S]*?)<div id="comment_\d{1,20}" class="cm">`)
 )
 
 func getPagePid(tid, page int, cookie string, LimitGet *http.LimitGet) ([]postData, error) {
@@ -128,6 +129,7 @@ func getPagePid(tid, page int, cookie string, LimitGet *http.LimitGet) ([]postDa
 			continue
 		}
 		msg := string(tmsg[1])
+		msg = strings.TrimSpace(msg)
 
 		pl = append(pl, postData{
 			Pid:      pid,
