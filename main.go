@@ -114,6 +114,19 @@ func main() {
 }
 
 func save() {
+	m := make(map[string]structs.McbbsAd)
+	bb, err := os.ReadFile("data.json")
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return
+		}
+		panic(err)
+	}
+	err = json.Unmarshal(bb, &m)
+	if err != nil {
+		panic(err)
+	}
+
 	db, err := bbolt.Open("data.txt", 0600, nil)
 	if err != nil {
 		panic(err)
@@ -129,7 +142,9 @@ func save() {
 			if err != nil {
 				panic(err)
 			}
-			m[string(k)] = ad
+			if _, ok := m[ad.Hash()]; !ok {
+				m[ad.Hash()] = ad
+			}
 			return nil
 		})
 	})
@@ -169,7 +184,6 @@ var (
 	cookie    string
 	sleepTime int
 	c         conifg
-	m         map[string]structs.McbbsAd
 	gen       bool
 	makeHtml  bool
 )
@@ -192,19 +206,6 @@ func init() {
 		panic(err)
 	}
 	err = json.Unmarshal(b, &c)
-	if err != nil {
-		panic(err)
-	}
-
-	m = make(map[string]structs.McbbsAd)
-	bb, err := os.ReadFile("data.json")
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return
-		}
-		panic(err)
-	}
-	err = json.Unmarshal(bb, &m)
 	if err != nil {
 		panic(err)
 	}
