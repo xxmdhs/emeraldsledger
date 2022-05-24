@@ -145,7 +145,6 @@ func save() {
 			if _, ok := m[ad.Hash()]; !ok {
 				m[ad.Hash()] = ad
 			}
-			m[ad.Hash()] = ad
 			return nil
 		})
 	})
