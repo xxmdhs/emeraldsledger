@@ -145,6 +145,7 @@ func save() {
 			if _, ok := m[ad.Hash()]; !ok {
 				m[ad.Hash()] = ad
 			}
+			m[ad.Hash()] = ad
 			return nil
 		})
 	})
@@ -173,6 +174,8 @@ func threadFind(tid, page int, LimitGet *http.LimitGet, ch chan<- structs.McbbsA
 		}
 		for _, v := range ad {
 			w.Add(1)
+			v := v
+			v.Cause, _ = thread.ConvertHtml(v.Cause)
 			ch <- v
 		}
 	}
