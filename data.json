@@ -2537,6 +2537,15 @@
         "Type": "623778",
         "Link": "https://www.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=623778&pid=16056949"
     },
+    "291b4ac2565ab7a0a588b532ac9097550c0c43a7bd199976dba8bc6f365b7f87": {
+        "Uid": "2153967",
+        "Username": "SHEEP_REALMS",
+        "Count": -2,
+        "Time": 1653991860,
+        "Cause": "00:00:08.23",
+        "Type": "mcbbsAd",
+        "Link": ""
+    },
     "291ef7487aa328686db96991a80ea17e37a9b47215795ea524666c29dc21fd1e": {
         "Uid": "1219598",
         "Username": "zhanshi123",
@@ -3787,6 +3796,15 @@
         "Cause": "申请项目：高亮<br />\r\n申请天数：1<br />\r\n图片地址：无<br />\r\n宣传帖链接：<a href=\"https://www.mcbbs.net/thread-944372-1-1.html\">https://www.mcbbs.net/thread-944372-1-1.html</a><br />\r\n是否本人宣传帖：是<br />\r\n是否为续费：否<br />\r\n版主：<a href=\"https://www.mcbbs.net/home.php?mod=space&amp;amp;uid=240460\">@xu11xx</a> <a href=\"https://www.mcbbs.net/home.php?mod=space&amp;amp;uid=2067786\">@消</a> (Sakura_end) <a href=\"https://www.mcbbs.net/home.php?mod=space&amp;amp;uid=1052157\">@Menzor</a>",
         "Type": "623778",
         "Link": "https://www.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=623778&pid=16646208"
+    },
+    "3b087d218a1d980d60005698c3ac6d05003663b34f57caf546c4f52ea09a3e1e": {
+        "Uid": "2999970",
+        "Username": "声名我主宰",
+        "Count": -22,
+        "Time": 1654004700,
+        "Cause": "蓝 科 数 据",
+        "Type": "mcbbsAd",
+        "Link": ""
     },
     "3b6317c876919bb0a197944d0fb99d0f16b95d95d4f673cb2d7c2b6706407134": {
         "Uid": "2229135",
@@ -10913,6 +10931,15 @@
         "Count": -15,
         "Time": 1640964000,
         "Cause": "[無料试用 | 按天计费七毛起] PixelCloud 全自助一键开服",
+        "Type": "mcbbsAd",
+        "Link": ""
+    },
+    "b1fae9fa6e1257c2b5e9b13688994971ec8f99498b4e66c861e3defe9789797e": {
+        "Uid": "2067786",
+        "Username": "#1E1412",
+        "Count": -22,
+        "Time": 1654004340,
+        "Cause": "蓝 科 数 据",
         "Type": "mcbbsAd",
         "Link": ""
     },
