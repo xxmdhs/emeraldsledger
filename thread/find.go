@@ -15,7 +15,7 @@ import (
 func FindPage(tid, page int, cookie string, LimitGet *http.LimitGet) ([]structs.McbbsAd, error) {
 	stid := strconv.Itoa(tid)
 
-	l, err := getPagePid(tid, page, "", LimitGet)
+	l, err := getPagePid(tid, page, cookie, LimitGet)
 	if err != nil {
 		return nil, fmt.Errorf("FindPage: %w", err)
 	}
@@ -104,7 +104,7 @@ func getPagePid(tid, page int, cookie string, LimitGet *http.LimitGet) ([]postDa
 	}
 	l := postReg.FindAll(b, -1)
 	if l == nil {
-		return nil, ErrNotFind
+		return nil, fmt.Errorf("getPagePid %v: %w", tid, ErrNotFind)
 	}
 	pl := make([]postData, 0, len(l))
 
