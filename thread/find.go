@@ -29,7 +29,7 @@ func FindPage(tid, page int, cookie string, LimitGet *http.LimitGet) ([]structs.
 		v := v
 		go func() {
 			defer w.Done()
-			b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+stid+`&pid=`+strconv.Itoa(v.Pid)+`&inajax=1`, "")
+			b, err := LimitGet.Get(`https://www.mcbbs.net/forum.php?mod=misc&action=viewratings&tid=`+stid+`&pid=`+strconv.Itoa(v.Pid)+`&inajax=1`, cookie)
 			if err != nil {
 				select {
 				case eCh <- fmt.Errorf("FindPage: %w", err):
